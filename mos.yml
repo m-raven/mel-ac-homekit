@@ -18,13 +18,17 @@ filesystem:
 
 cdefs:
   IP: 1
-  BLE: 0 # Not supported yet
+  BLE: 0  # Not supported yet
+  HAP_PRODUCT_NAME: '"Air Conditioner"'
+  HAP_PRODUCT_VENDOR: '"Mitsubishi Electric"'
+  HAP_PRODUCT_MODEL: '"Wall-mounted BX Series"'
+  HAP_PRODUCT_HW_REV: '"1.0"'
+  HAP_MAX_NUM_SESSIONS: 16
+  # Size fine-tuning
   # This saves quite a bit of space but disables all HAP debug output.
-  # HAP_LOG_LEVEL: 0
-  HAP_PRODUCT_NAME: "MACDrive"
-  HAP_PRODUCT_VENDOR: "DaVinciTeam"
-  HAP_PRODUCT_MODEL: "MEL-AC"
-  HAP_PRODUCT_HW_REV: "1.0"
+  # HAP_LOG_LEVEL: 0             # This saves 36K on esp8266.
+  # HAP_DISABLE_ASSERTS: 1       # 32K
+  # HAP_DISABLE_PRECONDITIONS: 1 # 40K
 
 build_vars:
   # Predefined WiFi network
@@ -64,7 +68,7 @@ config_schema:
   - ["wifi.ap.ssid", "MEL-????"]
   - ["wifi.ap.pass", "macdrive"]
   - ["mel_ac.enable", false]
-  - ["mel_ac.uart_no", 2]
+  - ["mel_ac.uart_no", 0]
   - ["mel_ac.uart_baud_rate", 2400]
   - ["mel_ac.period_ms", 250]
   - ["mel_ac.rpc_enable", true]
@@ -88,7 +92,8 @@ conds:
   - when: build_vars.UDP_DEBUG == "1"
     apply:
       config_schema:
-        - ["debug.udp_log_addr", "a.b.c.d:1993"]
+      - ["debug.udp_log_addr","192.168.50.96:1993"] # sleeping room
+      # - ["debug.udp_log_addr","192.168.50.246:1993"] # living room
 
   - when: build_vars.APP_MODE == "provisioned"
     apply:
