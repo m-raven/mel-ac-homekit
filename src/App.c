@@ -277,7 +277,7 @@ static float handleFan() {
   if (mgos_mel_ac_get_power() == MGOS_MEL_AC_PARAM_POWER_OFF) return 0;
   switch (mgos_mel_ac_get_fan()) {
     case MGOS_MEL_AC_PARAM_FAN_AUTO:
-      return 100;
+      return 0;
     case MGOS_MEL_AC_PARAM_FAN_QUIET:
       return 0;
     case MGOS_MEL_AC_PARAM_FAN_LOW:
@@ -764,6 +764,7 @@ HAPError HandleFanActiveWrite(HAPAccessoryServerRef *server,
                               uint8_t value,
                               void *_Nullable context HAP_UNUSED) {
   HAPLogInfo(&kHAPLog_Default, "%s: %d", __func__, value);
+  LOG(LL_INFO, ("HandleFanActiveWrite: %d", value));
 
   if (!mgos_mel_ac_get_connected()) return kHAPError_InvalidState;
 
@@ -805,14 +806,18 @@ HAPError HandleFanTargetStateWrite(
     const HAPUInt8CharacteristicWriteRequest *request, uint8_t value,
     void *_Nullable context HAP_UNUSED) {
   HAPLogInfo(&kHAPLog_Default, "%s: %d", __func__, value);
+  LOG(LL_INFO, ("HandleFanTargetStateWrite: %d", value));
+  LOG(LL_INFO, ("HandleFanTargetStateWrite - getFan: %d", mgos_mel_ac_get_fan()));
+  LOG(LL_INFO, ("HandleFanTargetStateWrite - getPower: %d", mgos_mel_ac_get_power()));
 
   if (!mgos_mel_ac_get_connected()) return kHAPError_InvalidState;
 
-  if (mgos_mel_ac_get_power() == MGOS_MEL_AC_PARAM_POWER_ON)
+  if (true)
     mgos_mel_ac_set_fan(value == kHAPCharacteristicValue_TargetFanState_Auto
                             ? MGOS_MEL_AC_PARAM_FAN_AUTO
-                            : MGOS_MEL_AC_PARAM_FAN_MED);
-
+                            : mgos_mel_ac_get_fan() == MGOS_MEL_AC_PARAM_FAN_AUTO
+                              ? MGOS_MEL_AC_PARAM_FAN_QUIET
+                              : mgos_mel_ac_get_fan());
   handleFanService();
 
   return kHAPError_None;
@@ -835,10 +840,13 @@ HAPError HandleFanRotationSpeedWrite(
     const HAPFloatCharacteristicWriteRequest *request, float value,
     void *_Nullable context HAP_UNUSED) {
   HAPLogInfo(&kHAPLog_Default, "%s: %f", __func__, value);
+  LOG(LL_INFO, ("HandleFanRotationSpeedWrite: %f", value));
+  LOG(LL_INFO, ("HandleFanRotationSpeedWrite - getFan: %d", mgos_mel_ac_get_fan()));
+  LOG(LL_INFO, ("HandleFanRotationSpeedWrite - getPower: %d", mgos_mel_ac_get_power()));
 
   if (!mgos_mel_ac_get_connected()) return kHAPError_InvalidState;
 
-  if (mgos_mel_ac_get_power() == MGOS_MEL_AC_PARAM_POWER_ON) {
+  if (true) {
     enum mgos_mel_ac_param_fan fan = mgos_mel_ac_get_fan();
     switch ((uint8_t) value) {
       case 0:
@@ -886,6 +894,8 @@ HAPError HandleModeFanOnWrite(HAPAccessoryServerRef *server,
                               bool value, void *_Nullable context HAP_UNUSED) {
   HAPLogInfo(&kHAPLog_Default, "%s: %s", __func__, value ? "true" : "false");
 
+  LOG(LL_INFO, ("HandleModeFanOnWrite: %d", value));
+
   if (!mgos_mel_ac_get_connected()) return kHAPError_InvalidState;
 
   mgos_mel_ac_set_power(value ? MGOS_MEL_AC_PARAM_POWER_ON
@@ -921,6 +931,8 @@ HAPError HandleModeDryOnWrite(HAPAccessoryServerRef *server,
                               const HAPBoolCharacteristicWriteRequest *request,
                               bool value, void *_Nullable context HAP_UNUSED) {
   HAPLogInfo(&kHAPLog_Default, "%s: %s", __func__, value ? "true" : "false");
+
+  LOG(LL_INFO, ("HandleModeDryOnWrite: %d", value));
 
   if (!mgos_mel_ac_get_connected()) return kHAPError_InvalidState;
 

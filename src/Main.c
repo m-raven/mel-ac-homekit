@@ -31,8 +31,6 @@
 static bool requestedFactoryReset;
 static bool clearPairings;
 
-#define MAX_NUM_SESSIONS 16
-
 #define PREFERRED_ADVERTISING_INTERVAL \
   (HAPBLEAdvertisingIntervalCreateFromMilliseconds(417.5f))
 
@@ -215,7 +213,7 @@ static void InitializePlatform() {
       &(const HAPPlatformTCPStreamManagerOptions){
           .port = kHAPNetworkPort_Any,  // Listen on unused port number from the
                                         // ephemeral port range.
-          .maxConcurrentTCPStreams = MAX_NUM_SESSIONS});
+          .maxConcurrentTCPStreams = HAP_MAX_NUM_SESSIONS});
 
   // Service discovery.
   static HAPPlatformServiceDiscovery serviceDiscovery;
@@ -327,7 +325,7 @@ void HandleUpdatedState(HAPAccessoryServerRef *_Nonnull server,
 #if IP
 static void InitializeIP() {
   // Prepare accessory server storage.
-  static HAPIPSession ipSessions[MAX_NUM_SESSIONS];
+  static HAPIPSession ipSessions[HAP_MAX_NUM_SESSIONS];
   static uint8_t ipScratchBuffer[2048];
   static HAPIPAccessoryServerStorage ipAccessoryServerStorage = {
       .sessions = ipSessions,
