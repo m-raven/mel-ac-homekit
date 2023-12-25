@@ -1,6 +1,6 @@
-author: 'd4rkmen'
+author: "d4rkmen"
 description: MEL-AC HomeKit for Mongoose OS
-version: 1.0.3
+version: 1.0.4
 
 libs_version: ${mos.version}
 modules_version: ${mos.version}
@@ -38,16 +38,31 @@ build_vars:
   UDP_DEBUG: 0
 
 config_schema:
-#  - ["app.name", "s", "Mitsubishi", {"title": "Accessory name (unless renamed by the user)"}]
-  - ["app", "o", {title: "User app config"}]
-  - ["app.blink_ms_sync", "i", 150, {title: "LED blink ms on remote params change"}]
-  - ["app.blink_ms_update", "i", 150, {title: "LED blink ms on new params apply"}]
-  - ["app.blink_ms_room", "i", 300, {title: "LED blink ms on room temp change"}]
-  - ["pins", "o", {title: "Pins layout"}]
-  - ["pins.led", "i", -1, {title: "LED GPIO pin"}]
-  - ["pins.button", "i", -1, {title: "Button GPIO pin"}]
-  - ["pins.button_hold_ms", "i", 5000, {title: "Button hold time for reset"}]
-  - ["pins.button_pull_up", "b", true, {title: "Button pull up or down"}]
+  #  - ["app.name", "s", "Mitsubishi", {"title": "Accessory name (unless renamed by the user)"}]
+  - ["app", "o", { title: "User app config" }]
+  - [
+      "app.blink_ms_sync",
+      "i",
+      150,
+      { title: "LED blink ms on remote params change" },
+    ]
+  - [
+      "app.blink_ms_update",
+      "i",
+      150,
+      { title: "LED blink ms on new params apply" },
+    ]
+  - [
+      "app.blink_ms_room",
+      "i",
+      300,
+      { title: "LED blink ms on room temp change" },
+    ]
+  - ["pins", "o", { title: "Pins layout" }]
+  - ["pins.led", "i", -1, { title: "LED GPIO pin" }]
+  - ["pins.button", "i", -1, { title: "Button GPIO pin" }]
+  - ["pins.button_hold_ms", "i", 5000, { title: "Button hold time for reset" }]
+  - ["pins.button_pull_up", "b", true, { title: "Button pull up or down" }]
   - ["wifi.ap.enable", true]
   - ["wifi.sta.enable", false]
   - ["wifi.ap.ssid", "MEL-????"]
@@ -59,8 +74,10 @@ config_schema:
   - ["mel_ac.rpc_enable", true]
   # 111-22-333
   - ["hap.salt", "MrnZCW7B/AmJ0ZnbzAVPfg=="]
-  - ["hap.verifier", "4dAjt0za+G/9BtS1nbVULDosZVp1ZT1I5Oj67/m1CNEEgoCXIeJZ1DPrP+xwjJfkmre6Xub4QS9ExpqQ1PCiI6ONhiHWKCDNQyYzZ7LZHzH2oaau1z2sAz2gJbvjSZLSWAdQEQjXTzKlyDh0CPFkaO/hFaw4di8hn0I/QyVZc8YICPHPc0uEk8Bcak2c0DQiRvgOwg4hPvdtLTbeJ+T/QM1ViOEqeV2RKq5yIT134muSa8R3A9LUAX3ZcElNo/vpRQVFGGVO0N8ZExGOFXkcmLLEuqfngdkYS3aFyIdvGEtnCZKT+2ABQi6ILdaY4Gsfd8aInci/6J2qV2rnw4AatKdtZ4xuea7tYZPru8eO5dFqU2pN+PZ/y0fbDFFN7TxE26UD8eIDXM8iqUi1dKbjBHqUXGYhuMLCXHcAPw/WNYHaKdd99OIb1iqtwJmbH+39r3jpjaJbDIi7omohG5hmDbJgce2S9ulDpJGfxzkqjmFMAME7kspiy46PqJEFXJZu"]
-  
+  - [
+      "hap.verifier",
+      "4dAjt0za+G/9BtS1nbVULDosZVp1ZT1I5Oj67/m1CNEEgoCXIeJZ1DPrP+xwjJfkmre6Xub4QS9ExpqQ1PCiI6ONhiHWKCDNQyYzZ7LZHzH2oaau1z2sAz2gJbvjSZLSWAdQEQjXTzKlyDh0CPFkaO/hFaw4di8hn0I/QyVZc8YICPHPc0uEk8Bcak2c0DQiRvgOwg4hPvdtLTbeJ+T/QM1ViOEqeV2RKq5yIT134muSa8R3A9LUAX3ZcElNo/vpRQVFGGVO0N8ZExGOFXkcmLLEuqfngdkYS3aFyIdvGEtnCZKT+2ABQi6ILdaY4Gsfd8aInci/6J2qV2rnw4AatKdtZ4xuea7tYZPru8eO5dFqU2pN+PZ/y0fbDFFN7TxE26UD8eIDXM8iqUi1dKbjBHqUXGYhuMLCXHcAPw/WNYHaKdd99OIb1iqtwJmbH+39r3jpjaJbDIi7omohG5hmDbJgce2S9ulDpJGfxzkqjmFMAME7kspiy46PqJEFXJZu",
+    ]
 
 libs:
   - origin: https://github.com/mongoose-os-libs/http-server
@@ -69,22 +86,24 @@ libs:
   - origin: https://github.com/mongoose-os-libs/rpc-ws
   - origin: https://github.com/d4rkmen/wifi-setup
   - origin: https://github.com/mongoose-os-libs/mel-ac
+  # - location: ./deps/mel-ac
 
 conds:
   - when: build_vars.UDP_DEBUG == "1"
     apply:
       config_schema:
-      - ["debug.udp_log_addr","192.168.110.100:1993"]
+      - ["debug.udp_log_addr","192.168.50.96:1993"] # sleeping room
+      # - ["debug.udp_log_addr","192.168.50.246:1993"] # living room
 
   - when: build_vars.APP_MODE == "provisioned"
     apply:
       config_schema:
-      - ["wifi.ap.enable", false]
-      - ["wifi.sta.enable", true]
-      - ["wifi.sta.ssid", "your_ssid"]
-      - ["wifi.sta.pass", "your_pass"]
-      - ["debug.stdout_uart", -1] # UART used for HVAC i/o
-      - ["debug.stderr_uart", -1] # UART used for HVAC i/o
+        - ["wifi.ap.enable", false]
+        - ["wifi.sta.enable", true]
+        - ["wifi.sta.ssid", "your_ssid"]
+        - ["wifi.sta.pass", "your_pass"]
+        - ["debug.stdout_uart", -1] # UART used for HVAC i/o
+        - ["debug.stderr_uart", -1] # UART used for HVAC i/o
 
   - when: mos.platform == "esp32"
     apply:
